@@ -70,15 +70,7 @@ img {
 myfile &lt;- &quot;activity.zip&quot;
 download.file(myurl,myfile,&quot;curl&quot;)
 mycsv &lt;- unzip(myfile)
-mydf &lt;- read.csv(mycsv)
-head(mydf)</code></pre>
-<pre><code>##   steps       date interval
-## 1    NA 2012-10-01        0
-## 2    NA 2012-10-01        5
-## 3    NA 2012-10-01       10
-## 4    NA 2012-10-01       15
-## 5    NA 2012-10-01       20
-## 6    NA 2012-10-01       25</code></pre>
+mydf &lt;- read.csv(mycsv)</code></pre>
 </div>
 <div id="what-is-mean-total-number-of-steps-taken-per-day" class="section level2">
 <h2>What is mean total number of steps taken per day?</h2>
@@ -127,20 +119,8 @@ hist(newtotalsteps)</code></pre>
 is.weekend &lt;- function (a) { if ( a == &quot;Saturday&quot; | a == &quot;Sunday&quot; ) {&quot;Weekend&quot;} else {&quot;Weekday&quot;}}
 newdt &lt;- data.table(newdf)
 # Now add two columns, one has the weekday, the next is logical for isweekend
-newdt[,weekday:=weekdays(as.Date(date))]</code></pre>
-<pre><code>##             steps       date interval weekday
-##     1: 1.49180328 2012-10-01        0  Monday
-##     2: 0.29508197 2012-10-01        5  Monday
-##     3: 0.11475410 2012-10-01       10  Monday
-##     4: 0.13114754 2012-10-01       15  Monday
-##     5: 0.06557377 2012-10-01       20  Monday
-##    ---                                       
-## 17564: 4.08196721 2012-11-30     2335  Friday
-## 17565: 2.86885246 2012-11-30     2340  Friday
-## 17566: 0.55737705 2012-11-30     2345  Friday
-## 17567: 0.19672131 2012-11-30     2350  Friday
-## 17568: 0.93442623 2012-11-30     2355  Friday</code></pre>
-<pre class="r"><code>for ( i in 1:nrow(newdt)) {newdt[i,isweekend:=as.factor(is.weekend(newdt[i,weekday]))] }
+shhh &lt;- newdt[,weekday:=weekdays(as.Date(date))]
+for ( i in 1:nrow(newdt)) {newdt[i,isweekend:=as.factor(is.weekend(newdt[i,weekday]))] }
 # Weekend
 WEDT &lt;- as.data.frame(newdt[isweekend==&quot;Weekend&quot;,])
 we.tinterval &lt;- split(WEDT[,1:5],WEDT[,3])
@@ -151,6 +131,7 @@ WDDT &lt;- as.data.frame(newdt[isweekend==&quot;Weekday&quot;,])
 wd.tinterval &lt;- split(WDDT[,1:5],WDDT[,3])
 wd.averages &lt;- sapply(1:288, function(x) {mysum &lt;- sum(wd.tinterval[[x]][,1], na.rm = TRUE) ; mysum/length(wd.tinterval[[x]][,1])})
 names(wd.averages) &lt;- names(wd.tinterval)
+# Plot
 par(mfrow = c(2,1))
 plot(names(we.averages),we.averages,xlab = &quot;Interval&quot;, ylab = &quot;Average steps&quot;, type =&quot;l&quot;)
 plot(names(wd.averages),wd.averages,xlab = &quot;Interval&quot;, ylab = &quot;Average steps&quot;, type =&quot;l&quot;)</code></pre>

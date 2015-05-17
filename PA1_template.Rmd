@@ -13,7 +13,6 @@ myfile <- "activity.zip"
 download.file(myurl,myfile,"curl")
 mycsv <- unzip(myfile)
 mydf <- read.csv(mycsv)
-head(mydf)
 ```
 
 
@@ -63,7 +62,7 @@ library(data.table)
 is.weekend <- function (a) { if ( a == "Saturday" | a == "Sunday" ) {"Weekend"} else {"Weekday"}}
 newdt <- data.table(newdf)
 # Now add two columns, one has the weekday, the next is logical for isweekend
-newdt[,weekday:=weekdays(as.Date(date))]
+shhh <- newdt[,weekday:=weekdays(as.Date(date))]
 for ( i in 1:nrow(newdt)) {newdt[i,isweekend:=as.factor(is.weekend(newdt[i,weekday]))] }
 # Weekend
 WEDT <- as.data.frame(newdt[isweekend=="Weekend",])
@@ -75,6 +74,7 @@ WDDT <- as.data.frame(newdt[isweekend=="Weekday",])
 wd.tinterval <- split(WDDT[,1:5],WDDT[,3])
 wd.averages <- sapply(1:288, function(x) {mysum <- sum(wd.tinterval[[x]][,1], na.rm = TRUE) ; mysum/length(wd.tinterval[[x]][,1])})
 names(wd.averages) <- names(wd.tinterval)
+# Plot
 par(mfrow = c(2,1))
 plot(names(we.averages),we.averages,xlab = "Interval", ylab = "Average steps", type ="l")
 plot(names(wd.averages),wd.averages,xlab = "Interval", ylab = "Average steps", type ="l")

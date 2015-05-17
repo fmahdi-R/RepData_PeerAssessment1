@@ -9,17 +9,6 @@ myfile <- "activity.zip"
 download.file(myurl,myfile,"curl")
 mycsv <- unzip(myfile)
 mydf <- read.csv(mycsv)
-head(mydf)
-```
-
-```
-##   steps       date interval
-## 1    NA 2012-10-01        0
-## 2    NA 2012-10-01        5
-## 3    NA 2012-10-01       10
-## 4    NA 2012-10-01       15
-## 5    NA 2012-10-01       20
-## 6    NA 2012-10-01       25
 ```
 
 
@@ -110,25 +99,7 @@ library(data.table)
 is.weekend <- function (a) { if ( a == "Saturday" | a == "Sunday" ) {"Weekend"} else {"Weekday"}}
 newdt <- data.table(newdf)
 # Now add two columns, one has the weekday, the next is logical for isweekend
-newdt[,weekday:=weekdays(as.Date(date))]
-```
-
-```
-##             steps       date interval weekday
-##     1: 1.49180328 2012-10-01        0  Monday
-##     2: 0.29508197 2012-10-01        5  Monday
-##     3: 0.11475410 2012-10-01       10  Monday
-##     4: 0.13114754 2012-10-01       15  Monday
-##     5: 0.06557377 2012-10-01       20  Monday
-##    ---                                       
-## 17564: 4.08196721 2012-11-30     2335  Friday
-## 17565: 2.86885246 2012-11-30     2340  Friday
-## 17566: 0.55737705 2012-11-30     2345  Friday
-## 17567: 0.19672131 2012-11-30     2350  Friday
-## 17568: 0.93442623 2012-11-30     2355  Friday
-```
-
-```r
+shhh <- newdt[,weekday:=weekdays(as.Date(date))]
 for ( i in 1:nrow(newdt)) {newdt[i,isweekend:=as.factor(is.weekend(newdt[i,weekday]))] }
 # Weekend
 WEDT <- as.data.frame(newdt[isweekend=="Weekend",])
@@ -140,6 +111,7 @@ WDDT <- as.data.frame(newdt[isweekend=="Weekday",])
 wd.tinterval <- split(WDDT[,1:5],WDDT[,3])
 wd.averages <- sapply(1:288, function(x) {mysum <- sum(wd.tinterval[[x]][,1], na.rm = TRUE) ; mysum/length(wd.tinterval[[x]][,1])})
 names(wd.averages) <- names(wd.tinterval)
+# Plot
 par(mfrow = c(2,1))
 plot(names(we.averages),we.averages,xlab = "Interval", ylab = "Average steps", type ="l")
 plot(names(wd.averages),wd.averages,xlab = "Interval", ylab = "Average steps", type ="l")
