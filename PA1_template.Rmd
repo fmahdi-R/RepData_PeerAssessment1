@@ -7,7 +7,7 @@ output:
 
 
 ## Loading and preprocessing the data
-```{r}
+```{r data-load}
 myurl <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
 myfile <- "activity.zip"
 download.file(myurl,myfile,"curl")
@@ -18,7 +18,7 @@ head(mydf)
 
 
 ## What is mean total number of steps taken per day?
-```{r}
+```{r total-steps-perday}
 mydaily <- split(mydf[,1:2],mydf[,2])
 totalsteps <- sapply(1:61,function(x) sum(mydaily[[x]][,1]))
 hist(totalsteps)
@@ -27,7 +27,7 @@ median(totalsteps,na.rm = TRUE)
 ```
 
 ## What is the average daily activity pattern?
-```{r}
+```{r daily-average}
 mytinterval <- split(mydf[,1:3],mydf[,3])
 averages <- sapply(1:288, function(x) {mysum <- sum(mytinterval[[x]][,1], na.rm = TRUE) ; mysum/length(mytinterval[[x]][,1])})
 names(averages) <- names(mytinterval)
@@ -39,7 +39,7 @@ The 5-minute interval containing the max average value of `r max(averages)` is :
 
 
 ## Imputing missing values
-```{r}
+```{r imputing}
 newdf <- data.frame(mydf)
 mynumna <- sum(is.na(newdf[,1]))
 for ( i in 1:nrow(newdf)) {
@@ -58,20 +58,26 @@ median(newtotalsteps,na.rm = TRUE)
 The total number of missing values NA, is `r mynumna` 
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r}
-is.weekend <- function (a) { if ( a == "Saturday" | a == "Sunday" ) {"Weekend"} else {"Weekday"}}
+```{r weekday-weekend}
 library(data.table)
-newdt <- data.tables(newdf)
+is.weekend <- function (a) { if ( a == "Saturday" | a == "Sunday" ) {"Weekend"} else {"Weekday"}}
+newdt <- data.table(newdf)
 # Now add two columns, one has the weekday, the next is logical for isweekend
 newdt[,weekday:=weekdays(as.Date(date))]
 for ( i in 1:nrow(newdt)) {newdt[i,isweekend:=as.factor(is.weekend(newdt[i,weekday]))] }
 # Weekend
-WEDT <- newdt[isweekend=="TRUE",]
-
+WEDT <- as.data.frame(newdt[isweekend=="Weekend",])
+we.tinterval <- split(WEDT[,1:5],WEDT[,3])
+we.averages <- sapply(1:288, function(x) {mysum <- sum(we.tinterval[[x]][,1], na.rm = TRUE) ; mysum/length(we.tinterval[[x]][,1])})
+names(we.averages) <- names(we.tinterval)
 # Weekday
-WDDT <- newdt[isweekend=="FALSE",]
-
-
+WDDT <- as.data.frame(newdt[isweekend=="Weekday",])
+wd.tinterval <- split(WDDT[,1:5],WDDT[,3])
+wd.averages <- sapply(1:288, function(x) {mysum <- sum(wd.tinterval[[x]][,1], na.rm = TRUE) ; mysum/length(wd.tinterval[[x]][,1])})
+names(wd.averages) <- names(wd.tinterval)
+par(mfrow = c(2,1))
+plot(names(we.averages),we.averages,xlab = "Interval", ylab = "Average steps", type ="l")
+plot(names(wd.averages),wd.averages,xlab = "Interval", ylab = "Average steps", type ="l")
 ```
 
 
