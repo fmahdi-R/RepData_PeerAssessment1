@@ -48,6 +48,9 @@ The 5-minute interval containing the max average value of `r max(averages)` is :
 
 
 ## Imputing missing values
+
+**NOTE** *The imputing strategy used was to replace each NA with the average value for that same interval, this was calculated in the previous chunk "daily-activity" , more specifically using the "averages" vector.*
+
 ```{r imputing}
 newdf <- data.frame(mydf)
 mynumna <- sum(is.na(newdf[,1]))

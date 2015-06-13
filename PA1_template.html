@@ -101,6 +101,7 @@ for (i in 1:length(mytinterval)) {if (averages[i] == max(averages)) mymax &lt;- 
 </div>
 <div id="imputing-missing-values" class="section level2">
 <h2>Imputing missing values</h2>
+<p><strong>NOTE</strong> <em>The imputing strategy used was to replace each NA with the average value for that same interval, this was calculated in the previous chunk “daily-activity” , more specifically using the “averages” vector.</em></p>
 <pre class="r"><code>newdf &lt;- data.frame(mydf)
 mynumna &lt;- sum(is.na(newdf[,1]))
 for ( i in 1:nrow(newdf)) {
